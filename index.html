@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pop AI - Free Text to Video Generator</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,18 +13,21 @@
       padding: 0;
       text-align: center;
     }
+
     header {
       padding: 20px;
       background: #111;
       font-size: 32px;
       font-weight: bold;
     }
+
     .container {
       width: 90%;
       max-width: 600px;
       margin: auto;
       padding-top: 40px;
     }
+
     textarea {
       width: 100%;
       height: 140px;
@@ -35,6 +37,7 @@
       font-size: 16px;
       outline: none;
     }
+
     select, button {
       width: 100%;
       padding: 14px;
@@ -43,6 +46,7 @@
       border: none;
       font-size: 16px;
     }
+
     button {
       background: #ff0066;
       color: white;
@@ -50,17 +54,18 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     button:hover {
       background: #ff3380;
     }
-    video {
-      width: 100%;
-      margin-top: 25px;
-      border-radius: 10px;
+
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
     }
   </style>
 </head>
-
 <body>
   <header>POP AI — Free Text to Video</header>
 
@@ -76,46 +81,33 @@
 
     <button onclick="generateVideo()">Generate Video</button>
 
-    <div id="status"></div>
-    <video id="resultVideo" controls style="display:none;"></video>
+    <div class="note">
+      Videos will open in a new tab using a free AI video generator.
+    </div>
   </div>
 
   <script>
     function generateVideo() {
       const prompt = document.getElementById("promptInput").value;
       const style = document.getElementById("styleSelect").value;
-      const status = document.getElementById("status");
-      const video = document.getElementById("resultVideo");
 
       if (!prompt) {
         alert("Please enter a prompt.");
         return;
       }
 
-      status.innerHTML = "🎥 Generating video, please wait 10–20 seconds...";
-      video.style.display = "none";
+      // Base free AI video generator URL
+      let url = "https://arting.ai/text-to-video?prompt=" + encodeURIComponent(prompt);
 
-      // FREE BACKEND — No API key needed
-      fetch("https://api-free-text-video.onrender.com/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, style })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.video_url) {
-          status.innerHTML = "✅ Video generated!";
-          video.src = data.video_url;
-          video.style.display = "block";
-        } else {
-          status.innerHTML = "❌ Error generating video.";
-        }
-      })
-      .catch(() => {
-        status.innerHTML = "❌ Server busy. Try again.";
-      });
+      // Add style parameter (if supported by the free site)
+      if (style === "anime") url += "&style=anime";
+      if (style === "cartoon") url += "&style=cartoon";
+      if (style === "story") url += "&style=story";
+      // Realistic style will use default
+
+      // Open the AI generator in a new tab
+      window.open(url, "_blank");
     }
   </script>
-
 </body>
-  </html>
+</html>
